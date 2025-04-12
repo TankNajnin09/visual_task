@@ -1,0 +1,136 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace db_connect
+{
+    public partial class Form1 : Form
+    {
+        string id;
+        string nm;
+        string ct; 
+        string cr;
+        string yr;
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=D:\Visual_C#\db_connect\db_connect\Database1.mdf;Integrated Security=True");
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            nm = textBox2.Text;
+            ct = textBox3.Text;
+            CheckBox[] ch = new CheckBox[3];
+            ch[0] = checkBox1;
+            ch[1] = checkBox2;
+            ch[2] = checkBox3;
+            for (int i = 0; i < ch.Length;i++)
+            {
+                if (ch[i].Checked)
+                {
+                    cr = ch[i].Text;
+                }
+            }
+            con.Open();
+           // SqlCommand cmd = new SqlCommand("insert into student values ('aaa','amreli')",con);
+            SqlCommand cmd = new SqlCommand("insert into student values('" + nm + "','" + ct + "','"+ cr +"','"+yr+"')", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            id = textBox1.Text;
+            nm = textBox2.Text;
+            ct = textBox3.Text;
+            CheckBox[] ch = new CheckBox[3];
+            ch[0] = checkBox1;
+            ch[1] = checkBox2;
+            ch[2] = checkBox3;
+            for (int i = 0; i < ch.Length; i++)
+            {
+                if (ch[i].Checked)
+                {
+                    cr = ch[i].Text;
+                }
+            }
+            con.Open();
+            // SqlCommand cmd = new SqlCommand("update student set name='hello',city='rajkot' where Id=301",con);
+            SqlCommand cmd = new SqlCommand("update student set name='"+nm+"',city='"+ct+"',course='"+cr+"','"+yr+"' where Id='"+id+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            id = textBox1.Text;
+            con.Open();
+            //SqlCommand cmd = new SqlCommand("delete from student where Id=301",con);
+            SqlCommand cmd = new SqlCommand("delete from student where Id='"+id+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from student",con);
+            SqlDataReader rd = cmd.ExecuteReader();
+            if(rd.HasRows)
+            {
+                //temp table
+                DataTable dt = new DataTable();
+                dt.Load(rd);//to file dt
+                dataGridView1.DataSource = dt;//to display data in gridview
+
+                //MessageBox.Show("Data fond");
+            }
+            else
+            {
+                MessageBox.Show("Data not fond");
+            }
+            con.Close();
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            textBox1.Text = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
+            textBox2.Text = dataGridView1.SelectedRows[0].Cells[1].Value.ToString();
+            textBox3.Text = dataGridView1.SelectedRows[0].Cells[2].Value.ToString();
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            yr = comboBox1.Text;
+        }
+
+    }
+}
