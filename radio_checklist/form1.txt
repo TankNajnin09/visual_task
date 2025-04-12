@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace database_con
+{
+    public partial class Form1 : Form
+    {
+        string id;
+        string gr;
+        string yr;
+        string st;
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=D:\Visual_C#\database_con\database_con\Database1.mdf;Integrated Security=True");
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //for checkedlistbox
+            foreach(string a in checkedListBox1.CheckedItems)
+            {
+                st = a;
+            }
+            //for radiobutton
+            if (radioButton1.Checked)
+            {
+                gr = radioButton1.Text;
+            }
+            else if (radioButton2.Checked)
+            {
+                gr = radioButton2.Text;
+            }
+            else 
+            {
+                gr = "";
+            }
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into student values('"+gr+"','"+yr+"','"+st+"')",con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            id = textBox1.Text;
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update student set gender='"+gr+"',year='"+yr+"',study='"+st+"' where Id='"+id+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            id = textBox1.Text;
+            con.Open();
+            //SqlCommand cmd = new SqlCommand("delete from student where Id=301",con);
+            SqlCommand cmd = new SqlCommand("delete from student where Id='" + id + "'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from student", con);
+            SqlDataReader rd = cmd.ExecuteReader();
+            if (rd.HasRows)
+            {
+                //temp table
+                DataTable dt = new DataTable();
+                dt.Load(rd);//to file dt
+                dataGridView1.DataSource = dt;//to display data in gridview
+
+                //MessageBox.Show("Data fond");
+            }
+            else
+            {
+                MessageBox.Show("Data not fond");
+            }
+            con.Close();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            yr=listBox1.Text;
+        }
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
