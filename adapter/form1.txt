@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace mytable
+{
+    public partial class Form1 : Form
+    {
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=D:\Visual_C#\mytable\mytable\Database1.mdf;Integrated Security=True");
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+        public void display()
+        {
+            SqlDataAdapter sda = new SqlDataAdapter("select *from detail",con);
+            DataSet ds = new DataSet();
+            sda.Fill(ds);
+            dataGridView1.DataSource = ds.Tables[0];
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into detail values('" + textBox1.Text + "','" + textBox2.Text + "','" + textBox3.Text + "')", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            display();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("delete from detail where id='"+textBox1.Text+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            display();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update detail set name='"+textBox2.Text+"',city='"+textBox3.Text+"' where id='"+textBox1.Text+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            display();
+        }
+    }
+}
